@@ -30,13 +30,31 @@ pipeline {
             steps {
              echo 'Test stage'
              sh '''
+
              if [ -f "build/index.html" ]; then
               echo "File exists."
              else
               echo "File does not exist."
               exit 1 # Fail the pipeline
               fi
+
              npm test
+            '''
+            }
+        }
+          stage('E2E') {
+          agent {
+            docker {
+              image 'mcr.microsoft.com/playwright:v1.49.0-noble'
+              reuseNode true
+            }
+          }
+            steps {
+             echo 'E2E stage'
+             sh '''
+             npm install -g serve
+             serve -s build
+             npx playwright test
             '''
             }
         }
