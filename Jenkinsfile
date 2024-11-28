@@ -1,3 +1,5 @@
+/* groovylint-disable LineLength */
+
 pipeline {
     agent any
 
@@ -135,6 +137,31 @@ pipeline {
                node_modules/.bin/node-jq -r .deploy_url deploy-output.json
               '''
             }
+            script {
+              env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
+            }
+        }
+        stage('Staging E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            environment {
+                CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+            }
+            steps {
+                echo 'E2E stage'
+                sh '''
+              npx playwright test --reporter=html
+            '''
+            }
+            post {
+                    always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Stage E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                    }
+            }
         }
         stage('Approval') {
             steps {
@@ -176,7 +203,7 @@ pipeline {
             }
             post {
                     always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod E2E Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
             }
         }
