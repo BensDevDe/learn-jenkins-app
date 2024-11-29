@@ -132,7 +132,7 @@ pipeline {
                 CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
             }
             steps {
-                echo 'E2E stage'
+                echo 'Deploy Staging'
                 sh '''
                     npm install netlify-cli node-jq
                     node_modules/.bin/netlify netlify --version
@@ -149,11 +149,11 @@ pipeline {
                     }
             }
         }
-       /*  stage('Approval') {
+         stage('Approval') {
             steps {
                 input message: 'Ready to deploy?', ok: 'Yes, i am sure I want to deploy!'
             }
-        } */
+        }
         // stage('Deploy prod') {
         //     agent {
         //         docker {
@@ -182,7 +182,7 @@ pipeline {
                 CI_ENVIRONMENT_URL = 'https://stellular-croissant-1af89e.netlify.app/'
             }
             steps {
-                echo 'E2E stage'
+                echo 'Deploy Prod'
                 sh '''
                 node --version
                 npm install netlify-cli
