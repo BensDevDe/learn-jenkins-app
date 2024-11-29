@@ -149,11 +149,11 @@ pipeline {
                     }
             }
         }
-         stage('Approval') {
-            steps {
-                input message: 'Ready to deploy?', ok: 'Yes, i am sure I want to deploy!'
-            }
-        }
+         //stage('Approval') {
+           // steps {
+               // input message: 'Ready to deploy?', ok: 'Yes, i am sure I want to deploy!'
+            //}
+        //}
         // stage('Deploy prod') {
         //     agent {
         //         docker {
