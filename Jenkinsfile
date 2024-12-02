@@ -29,7 +29,6 @@ pipeline {
                 node --version
                 npm --version
                 npm ci
-                npm install serve
                 npm run build
                 ls -la
               '''
@@ -73,7 +72,7 @@ pipeline {
         //     '''
         //     }
         // }
-        stage('Run Tests') {
+        stage('Tests') {
             parallel {
                 stage('Unit-Test') {
                     agent {
@@ -114,10 +113,10 @@ pipeline {
                     steps {
                         echo 'E2E stage'
                         sh '''
-                  node_modules/.bin/serve -s build &
-                  sleep 10
-                  npx playwright test --reporter=html
-                  '''
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test --reporter=html
+                        '''
                     }
                     post {
                         always {
